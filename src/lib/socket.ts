@@ -1,30 +1,34 @@
 /**
- * Socket.IOクライアント設定モジュール
+ * Mock Socket for Static Deployment
  *
- * このモジュールは、アプリケーション全体で使用されるSocket.IOクライアントの
- * インスタンスを初期化し、提供します。
- * サーバーとのリアルタイム通信を管理します。
+ * This module provides a mock socket implementation for static builds
+ * that replaces the actual Socket.IO functionality.
  */
 
-import { io, Socket } from "socket.io-client";
-import { ServerToClientEvents, ClientToServerEvents } from "./types";
+// Mock socket object that mimics Socket.IO interface
+export const socket = {
+  connected: true,
+  id: "mock-socket-id",
 
-// 環境に応じてURLを設定
-const URL =
-  process.env.NODE_ENV === "production"
-    ? undefined // 本番環境では自動でホストされているサーバーに自動的に接続させる
-    : "http://localhost:3000";
+  connect: () => {
+    console.log("Mock socket: connect called");
+  },
 
-/**
- * グローバルSocket.IOクライアントインスタンス
- *
- * アプリケーションの起動時に初期化され、サーバーとの接続を試みます。
- * 再接続ロジックも含まれています。
- */
-export const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-  URL,
-  {
-    reconnectionAttempts: 5,
-    reconnectionDelay: 1000,
-  }
-);
+  disconnect: () => {
+    console.log("Mock socket: disconnect called");
+  },
+
+  emit: (event: string, ...args: unknown[]) => {
+    console.log("Mock socket emit:", event, args);
+  },
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  on: (event: string, _callback: (...args: unknown[]) => void) => {
+    console.log("Mock socket on:", event);
+  },
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  off: (event: string, _callback?: (...args: unknown[]) => void) => {
+    console.log("Mock socket off:", event);
+  },
+};
